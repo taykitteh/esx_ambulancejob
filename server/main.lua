@@ -3,8 +3,13 @@ local playersHealing, deadPlayers = {}, {}
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
-TriggerEvent('esx_phone:registerNumber', 'ambulance', _U('alert_ambulance'), true, true)
+if Config.EnableESXService then
+	if Config.MaxInService ~= -1 then
+		TriggerEvent('esx_service:activateService', 'ambulance', Config.MaxInService)
+	end
+end
 
+TriggerEvent('esx_phone:registerNumber', 'ambulance', _U('alert_ambulance'), true, true)
 TriggerEvent('esx_society:registerSociety', 'ambulance', 'Ambulance', 'society_ambulance', 'society_ambulance', 'society_ambulance', {type = 'public'})
 
 RegisterNetEvent('esx_ambulancejob:revive')
@@ -150,6 +155,63 @@ ESX.RegisterServerCallback('esx_ambulancejob:getItemAmount', function(source, cb
 	local quantity = xPlayer.getInventoryItem(item).count
 
 	cb(quantity)
+end)
+
+RegisterNetEvent('esx_ambulancejob:getStockItem')
+AddEventHandler('esx_ambulancejob:getStockItem', function(itemName, count)
+	local _source = source
+	local xPlayer = ESX.GetPlayerFromId(_source)
+
+	TriggerEvent('esx_addoninventory:getSharedInventory', 'society_ambulance', function(inventory)
+		local inventoryItem = inventory.getItem(itemName)
+
+		-- is there enough in the society?
+		if count > 0 and inventoryItem.count >= count then
+
+			-- can the player carry the said amount of x item?
+			if xPlayer.canCarryItem(itemName, count) then
+				inventory.removeItem(itemName, count)
+				xPlayer.addInventoryItem(itemName, count)
+				xPlayer.showNotification(_U('have_withdrawn', count, inventoryItem.label))
+			else
+				xPlayer.showNotification(_U('quantity_invalid'))
+			end
+		else
+			xPlayer.showNotification(_U('quantity_invalid'))
+		end
+	end)
+end)
+
+RegisterNetEvent('esx_ambulancejob:putStockItems')
+AddEventHandler('esx_ambulancejob:putStockItems', function(itemName, count)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local sourceItem = xPlayer.getInventoryItem(itemName)
+
+	TriggerEvent('esx_addoninventory:getSharedInventory', 'society_ambulance', function(inventory)
+		local inventoryItem = inventory.getItem(itemName)
+
+		-- does the player have enough of the item?
+		if sourceItem.count >= count and count > 0 then
+			xPlayer.removeInventoryItem(itemName, count)
+			inventory.addItem(itemName, count)
+			xPlayer.showNotification(_U('have_deposited', count, inventoryItem.label))
+		else
+			xPlayer.showNotification(_U('quantity_invalid'))
+		end
+	end)
+end)
+
+ESX.RegisterServerCallback('esx_ambulancejob:getStockItems', function(source, cb)
+	TriggerEvent('esx_addoninventory:getSharedInventory', 'society_ambulance', function(inventory)
+		cb(inventory.items)
+	end)
+end)
+
+ESX.RegisterServerCallback('esx_ambulancejob:getPlayerInventory', function(source, cb)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local items   = xPlayer.inventory
+
+	cb({items = items})
 end)
 
 ESX.RegisterServerCallback('esx_ambulancejob:buyJobVehicle', function(source, cb, vehicleProps, type)
@@ -314,3 +376,61 @@ AddEventHandler('esx_ambulancejob:setDeathStatus', function(isDead)
 		})
 	end
 end)
+
+ESX.RegisterServerCallback('esx_ambulancejob:getStockItems', function(source, cb)
+	TriggerEvent('esx_addoninventory:getSharedInventory', 'society_ambulance', function(inventory)
+		cb(inventory.items)
+	end)
+end)
+
+ESX.RegisterServerCallback('esx_ambulancejob:getPlayerInventory', function(source, cb)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local items   = xPlayer.inventory
+
+	cb({items = items})
+end)
+
+AddEventHandler('playerDropped', function()
+	-- Save the source in case we lose it (which happens a lot)
+	local playerId = source
+
+	-- Did the player ever join?
+	if playerId then
+		local xPlayer = ESX.GetPlayerFromId(playerId)
+
+		-- Is it worth telling all clients to refresh?
+		if xPlayer and xPlayer.job.name == 'ambulance' then
+			Citizen.Wait(5000)
+			TriggerClientEvent('esx_ambulancejob:updateBlip', -1)
+		end
+	end
+end)
+
+RegisterNetEvent('esx_ambulancejob:spawned')
+AddEventHandler('esx_ambulancejob:spawned', function()
+	local xPlayer = ESX.GetPlayerFromId(playerId)
+
+	if xPlayer and xPlayer.job.name == 'ambulance' then
+		Citizen.Wait(5000)
+		TriggerClientEvent('esx_ambulancejob:updateBlip', -1)
+	end
+end)
+
+RegisterNetEvent('esx_ambulancejob:forceBlip')
+AddEventHandler('esx_ambulancejob:forceBlip', function()
+	TriggerClientEvent('esx_ambulancejob:updateBlip', -1)
+end)
+
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Citizen.Wait(5000)
+		TriggerClientEvent('esx_ambulancejob:updateBlip', -1)
+	end
+end)
+
+AddEventHandler('onResourceStop', function(resource)
+	if resource == GetCurrentResourceName() then
+		TriggerEvent('esx_phone:removeNumber', 'ambulance')
+	end
+end)
+
