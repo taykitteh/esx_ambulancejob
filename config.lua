@@ -1,8 +1,9 @@
 Config                            = {}
 
-Config.DrawDistance               = 20.0 -- How close do you need to be in order for the markers to be drawn (in GTA units).
-
-Config.Marker                     = {type = 1, x = 1.5, y = 1.5, z = 0.5, r = 102, g = 0, b = 102, a = 100, rotate = false}
+Config.DrawDistance               = 10.0 -- How close do you need to be in order for the markers to be drawn (in GTA units).
+Config.MarkerType                 = {Cloakrooms = 27, Pharmacies = 27, BossActions = 27, Vehicles = 36, Helicopters = 34}
+Config.MarkerSize                 = {x = 1.5, y = 1.5, z = 0.5}
+Config.MarkerColor                = {r = 0, g = 0, b = 255}
 
 Config.ReviveReward               = 700  -- Revive reward, set to 0 if you don't want it enabled
 Config.AntiCombatLog              = true -- Enable anti-combat logging? (Removes Items when a player logs back after intentionally logging out while dead.)
@@ -10,8 +11,8 @@ Config.LoadIpl                    = true -- Disable if you're using fivem-ipl or
 
 Config.Locale                     = 'en'
 
-Config.EarlyRespawnTimer          = 60000 * 1  -- time til respawn is available
-Config.BleedoutTimer              = 60000 * 10 -- time til the player bleeds out
+Config.EarlyRespawnTimer          = 60000 * 15  -- time til respawn is available
+Config.BleedoutTimer              = 60000 * 60 -- time til the player bleeds out
 
 Config.EnablePlayerManagement     = false -- Enable society managing (If you are using esx_society).
 
@@ -23,27 +24,33 @@ Config.RemoveItemsAfterRPDeath    = true
 Config.EarlyRespawnFine           = false
 Config.EarlyRespawnFineAmount     = 5000
 
-Config.RespawnPoint = {coords = vector3(341.0, -1397.3, 32.5), heading = 48.5}
+Config.EnableJobBlip              = false -- Enable blips for medics on duty, requires esx_society.
+Config.EnableCustomPeds           = false -- Enable custom peds in cloak room? See Config.CustomPeds below to customize peds.
+Config.EnableESXService           = false -- Enable esx service?
+Config.MaxInService               = -1 -- How much people can be in service at once?
+
+Config.RespawnPoint = {coords = vector3(298.86, -584.43, 43.26), heading = 72.0}
 
 Config.Hospitals = {
 
-	CentralLosSantos = {
+	PillBoxMedical = {
 
 		Blip = {
-			coords = vector3(307.7, -1433.4, 28.9),
-			sprite = 61,
-			scale  = 1.2,
-			color  = 2
+			Coords  = vector3(304.93, -586.93, 48.00),
+			Sprite  = 61,
+			Display = 4,
+			Scale   = 1.0,
+			Colour  = 3
 		},
-
-		AmbulanceActions = {
-			vector3(270.5, -1363.0, 23.5)
+		
+		Cloakrooms = {
+		    vector3(302.08, -599.36, 42.29)
 		},
 
 		Pharmacies = {
-			vector3(230.1, -1366.1, 38.5)
+			vector3(306.70, -601.90, 42.29)
 		},
-
+		
 		Vehicles = {
 			{
 				Spawner = vector3(307.7, -1433.4, 30.0),
@@ -68,61 +75,10 @@ Config.Hospitals = {
 				}
 			}
 		},
-
-		FastTravels = {
-			{
-				From = vector3(294.7, -1448.1, 29.0),
-				To = {coords = vector3(272.8, -1358.8, 23.5), heading = 0.0},
-				Marker = {type = 1, x = 2.0, y = 2.0, z = 0.5, r = 102, g = 0, b = 102, a = 100, rotate = false}
-			},
-
-			{
-				From = vector3(275.3, -1361, 23.5),
-				To = {coords = vector3(295.8, -1446.5, 28.9), heading = 0.0},
-				Marker = {type = 1, x = 2.0, y = 2.0, z = 0.5, r = 102, g = 0, b = 102, a = 100, rotate = false}
-			},
-
-			{
-				From = vector3(247.3, -1371.5, 23.5),
-				To = {coords = vector3(333.1, -1434.9, 45.5), heading = 138.6},
-				Marker = {type = 1, x = 1.5, y = 1.5, z = 0.5, r = 102, g = 0, b = 102, a = 100, rotate = false}
-			},
-
-			{
-				From = vector3(335.5, -1432.0, 45.50),
-				To = {coords = vector3(249.1, -1369.6, 23.5), heading = 0.0},
-				Marker = {type = 1, x = 2.0, y = 2.0, z = 0.5, r = 102, g = 0, b = 102, a = 100, rotate = false}
-			},
-
-			{
-				From = vector3(234.5, -1373.7, 20.9),
-				To = {coords = vector3(320.9, -1478.6, 28.8), heading = 0.0},
-				Marker = {type = 1, x = 1.5, y = 1.5, z = 1.0, r = 102, g = 0, b = 102, a = 100, rotate = false}
-			},
-
-			{
-				From = vector3(317.9, -1476.1, 28.9),
-				To = {coords = vector3(238.6, -1368.4, 23.5), heading = 0.0},
-				Marker = {type = 1, x = 1.5, y = 1.5, z = 1.0, r = 102, g = 0, b = 102, a = 100, rotate = false}
-			}
-		},
-
-		FastTravelsPrompt = {
-			{
-				From = vector3(237.4, -1373.8, 26.0),
-				To = {coords = vector3(251.9, -1363.3, 38.5), heading = 0.0},
-				Marker = {type = 1, x = 1.5, y = 1.5, z = 0.5, r = 102, g = 0, b = 102, a = 100, rotate = false},
-				Prompt = _U('fast_travel')
-			},
-
-			{
-				From = vector3(256.5, -1357.7, 36.0),
-				To = {coords = vector3(235.4, -1372.8, 26.3), heading = 0.0},
-				Marker = {type = 1, x = 1.5, y = 1.5, z = 0.5, r = 102, g = 0, b = 102, a = 100, rotate = false},
-				Prompt = _U('fast_travel')
-			}
-		}
-
+		
+		BossActions = {
+		    vector3(334.75, -594.26, 42.29)
+		}		
 	}
 }
 
@@ -160,6 +116,142 @@ Config.AuthorizedVehicles = {
 		boss = {
 			{model = 'buzzard2', price = 10000},
 			{model = 'seasparrow', price = 250000}
+		}
+	}
+}
+-- i am not sure of the peds
+Config.CustomPeds = {
+	shared = {
+		{label = 'Medic Ped', maleModel = '', femaleModel = ''}
+	},
+
+	ambulance = {},
+
+	doctor = {},
+
+	chief_doctor = {},
+
+	boss = {
+		{label = 'Boss Ped', maleModel = '', femaleModel = ''}
+	}
+}
+
+-- CHECK SKINCHANGER CLIENT MAIN.LUA for matching elements
+Config.Uniforms = {
+	ambulance = {
+		male = {
+			tshirt_1 = 54,  tshirt_2 = 0,
+			torso_1 = 74,   torso_2 = 6,
+			decals_1 = 0,   decals_2 = 0,
+			arms = 85,
+			pants_1 = 10,   pants_2 = 0,
+			shoes_1 = 12,   shoes_2 = 6,
+			helmet_1 = -1,  helmet_2 = 0,
+			chain_1 = 0,    chain_2 = 0,
+			ears_1 = 0,     ears_2 = 0,
+			bproof_1 = 13,  bproof_2 = 0
+		},
+		female = {
+			tshirt_1 = 65,  tshirt_2 = 0,
+			torso_1 = 25,   torso_2 = 6,
+			decals_1 = 0,   decals_2 = 0,
+			arms = 109,
+			pants_1 = 3,   pants_2 = 0,
+			shoes_1 = 52,   shoes_2 = 0,
+			helmet_1 = -1,  helmet_2 = 0,
+			chain_1 = 0,    chain_2 = 0,
+			ears_1 = 2,     ears_2 = 0,
+			bproof_1 = 14,  bproof_2 = 0
+		}
+	},
+
+	doctor = {
+		male = {
+			tshirt_1 = 54,  tshirt_2 = 0,
+			torso_1 = 74,   torso_2 = 6,
+			decals_1 = 0,   decals_2 = 0,
+			arms = 85,
+			pants_1 = 10,   pants_2 = 0,
+			shoes_1 = 12,   shoes_2 = 6,
+			helmet_1 = -1,  helmet_2 = 0,
+			chain_1 = 0,    chain_2 = 0,
+			ears_1 = 0,     ears_2 = 0,
+			bproof_1 = 13,  bproof_2 = 0
+		},
+	    female = {
+			tshirt_1 = 65,  tshirt_2 = 0,
+			torso_1 = 25,   torso_2 = 6,
+			decals_1 = 0,   decals_2 = 0,
+			arms = 109,
+			pants_1 = 3,   pants_2 = 0,
+			shoes_1 = 52,   shoes_2 = 0,
+			helmet_1 = -1,  helmet_2 = 0,
+			chain_1 = 0,    chain_2 = 0,
+			ears_1 = 2,     ears_2 = 0,
+			bproof_1 = 14,  bproof_2 = 0
+		}
+	},
+
+	chief_doctor = {
+		male = {
+			tshirt_1 = 54,  tshirt_2 = 0,
+			torso_1 = 74,   torso_2 = 6,
+			decals_1 = 0,   decals_2 = 0,
+			arms = 85,
+			pants_1 = 10,   pants_2 = 0,
+			shoes_1 = 12,   shoes_2 = 6,
+			helmet_1 = -1,  helmet_2 = 0,
+			chain_1 = 0,    chain_2 = 0,
+			ears_1 = 0,     ears_2 = 0,
+			bproof_1 = 13,  bproof_2 = 0
+		},
+		female = {
+			tshirt_1 = 65,  tshirt_2 = 0,
+			torso_1 = 25,   torso_2 = 6,
+			decals_1 = 0,   decals_2 = 0,
+			arms = 109,
+			pants_1 = 3,   pants_2 = 0,
+			shoes_1 = 52,   shoes_2 = 0,
+			helmet_1 = -1,  helmet_2 = 0,
+			chain_1 = 0,    chain_2 = 0,
+			ears_1 = 2,     ears_2 = 0,
+			bproof_1 = 14,  bproof_2 = 0
+		}
+	},
+
+	boss = {
+		male = {
+			tshirt_1 = 54,  tshirt_2 = 0,
+			torso_1 = 74,   torso_2 = 6,
+			decals_1 = 0,   decals_2 = 0,
+			arms = 85,
+			pants_1 = 10,   pants_2 = 0,
+			shoes_1 = 12,   shoes_2 = 6,
+			helmet_1 = -1,  helmet_2 = 0,
+			chain_1 = 0,    chain_2 = 0,
+			ears_1 = 0,     ears_2 = 0,
+			bproof_1 = 13,  bproof_2 = 0
+		},
+		female = {
+			tshirt_1 = 65,  tshirt_2 = 0,
+			torso_1 = 25,   torso_2 = 6,
+			decals_1 = 0,   decals_2 = 0,
+			arms = 109,
+			pants_1 = 3,   pants_2 = 0,
+			shoes_1 = 52,   shoes_2 = 0,
+			helmet_1 = -1,  helmet_2 = 0,
+			chain_1 = 0,    chain_2 = 0,
+			ears_1 = 2,     ears_2 = 0,
+			bproof_1 = 14,  bproof_2 = 0
+		}
+	},
+-- not needed but here?
+	bullet_wear = {
+		male = {
+			bproof_1 = 13,  bproof_2 = 0
+		},
+		female = {
+			bproof_1 = 13,  bproof_2 = 1
 		}
 	}
 }
