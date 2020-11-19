@@ -1,6 +1,6 @@
 local firstSpawn, PlayerLoaded = true, false
-
 isDead = false
+
 ESX = nil
 
 AddEventHandler("onClientMapStart", function()
@@ -33,7 +33,7 @@ RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
 	ESX.PlayerData.job = job
 end)
-
+--comment here to next for kash
 AddEventHandler('esx:onPlayerSpawn', function()
 	isDead = false
 
@@ -54,22 +54,25 @@ AddEventHandler('esx:onPlayerSpawn', function()
 		end
 	end
 end)
-
--- Create blips
-Citizen.CreateThread(function()
-	for k,v in pairs(Config.Hospitals) do
-		local blip = AddBlipForCoord(v.Blip.coords)
-
-		SetBlipSprite(blip, v.Blip.sprite)
-		SetBlipScale(blip, v.Blip.scale)
-		SetBlipColour(blip, v.Blip.color)
-		SetBlipAsShortRange(blip, true)
-
-		BeginTextCommandSetBlipName('STRING')
-		AddTextComponentSubstringPlayerName(_U('blip_hospital'))
-		EndTextCommandSetBlipName(blip)
+--[[ kash
+RegisterNetEvent('esx_ambulancejob:multicharacter')
+AddEventHandler('esx_ambulancejob:multicharacter', function()
+	isDead = false
+	if firstSpawn then
+		firstSpawn = false
+		if Config.AntiCombatLog then
+			while not PlayerLoaded do
+				Citizen.Wait(1000)
+			end
+			ESX.TriggerServerCallback('esx_ambulancejob:getDeathStatus', function(isDead)
+				if isDead and Config.AntiCombatLog then
+					ESX.ShowNotification(_U('combatlog_message'))
+					RemoveItemsAfterRPDeath()
+				end
+			end)
+		end
 	end
-end)
+end)--]] 
 
 -- Disable most inputs when dead
 Citizen.CreateThread(function()
@@ -96,7 +99,13 @@ function OnPlayerDeath()
 	StartDistressSignal()
 
 	StartScreenEffect('DeathFailOut', 0, false)
+	repeat
+	   SetPedToRagdoll(GetPlayerPed(-1), 1000, 1000, 0, 0, 0, 0)
+	   ClearPedTasksImmediately(GetPlayerPed(-1))
+	   Citizen.Wait(45000)
+	until isDead == false
 end
+
 
 RegisterNetEvent('esx_ambulancejob:useItem')
 AddEventHandler('esx_ambulancejob:useItem', function(itemName)
@@ -309,7 +318,7 @@ function RemoveItemsAfterRPDeath()
 		end)
 	end)
 end
-
+--comment here  for kash
 function RespawnPed(ped, coords, heading)
 	SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, false, true)
 	NetworkResurrectLocalPlayer(coords.x, coords.y, coords.z, heading, true, false)
@@ -320,6 +329,18 @@ function RespawnPed(ped, coords, heading)
 	TriggerEvent('esx:onPlayerSpawn')
 	TriggerEvent('playerSpawned') -- compatibility with old scripts, will be removed soon
 end
+--
+--[[kash
+function RespawnPed(ped, coords, heading)
+	SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, false, true)
+	NetworkResurrectLocalPlayer(coords.x, coords.y, coords.z, heading, true, false)
+	SetPlayerInvincible(ped, false)
+	ClearPedBloodDamage(ped)
+
+	TriggerServerEvent('esx:onPlayerSpawn')
+	TriggerEvent('esx_ambulancejob:multicharacter')
+	TriggerEvent('playerSpawned') -- compatibility with old scripts, will be removed soon
+end--]]
 
 RegisterNetEvent('esx_phone:loaded')
 AddEventHandler('esx_phone:loaded', function(phoneNumber, contacts)
