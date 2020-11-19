@@ -1,12 +1,13 @@
 Locales['en'] = {
   -- Cloakroom
+  ['open_cloakroom'] = 'press ~INPUT_CONTEXT~ to access the ~b~Cloakroom~s~.',
   ['cloakroom'] = 'locker Room',
   ['ems_clothes_civil'] = 'civilian Clothes',
   ['ems_clothes_ems'] = 'EMS Clothes',
   -- Vehicles
   ['ambulance'] = 'ambulance',
-  ['helicopter_prompt'] = 'press ~INPUT_CONTEXT~ to access the ~y~Helicopter Actions~s~.',
-  ['garage_prompt'] = 'press ~INPUT_CONTEXT~ to access the ~y~Vehicle Actions~s~.',
+  ['helicopter_prompt'] = 'press ~INPUT_CONTEXT~ to access the ~b~Helicopter Actions~s~.',
+  ['garage_prompt'] = 'press ~INPUT_CONTEXT~ to access the ~b~Vehicle Actions~s~.',
   ['garage_title'] = 'vehicle Actions',
   ['garage_stored'] = 'stored',
   ['garage_notstored'] = 'not in garage',
@@ -41,18 +42,27 @@ Locales['en'] = {
   ['player_not_conscious'] = 'that player is not conscious!',
   -- Boss Menu
   ['boss_actions'] = 'boss Actions',
+  ['open_bossmenu'] = 'press ~INPUT_CONTEXT~ to access the ~b~Boss Actions~s~.',
   -- Misc
   ['invalid_amount'] = '~r~Invalid amount',
-  ['actions_prompt'] = 'press ~INPUT_CONTEXT~ access the ~y~Ambulance Actions~s~.',
+  ['actions_prompt'] = 'press ~INPUT_CONTEXT~ access the ~b~Ambulance Actions~s~.',
   ['deposit_amount'] = 'deposit Amount',
   ['money_withdraw'] = 'amount withdrawn',
   ['fast_travel'] = 'press ~INPUT_CONTEXT~ to fast travel.',
-  ['open_pharmacy'] = 'press ~INPUT_CONTEXT~ to open the pharmacy.',
+  ['open_pharmacy'] = 'press ~INPUT_CONTEXT~ to open the ~b~Pharmacy~s~.',
   ['pharmacy_menu_title'] = 'pharmacy',
   ['pharmacy_take'] = 'take <span style="color:blue;">%s</span>',
   ['medikit'] = 'medikit',
   ['bandage'] = 'bandage',
   ['max_item'] = 'You are already carrying enough.',
+   -- Service
+  ['service_max'] = 'you cannot enter service, max medics in service: %s/%s',
+  ['service_not'] = 'you have not entered service! You\'ll have to get changed first.',
+  ['service_anonunce'] = 'service information',
+  ['service_in'] = 'you\'ve entered service, welcome!',
+  ['service_in_announce'] = 'operator ~y~%s~s~ has entered service!',
+  ['service_out'] = 'you have left service.',
+  ['service_out_announce'] = 'operator ~y~%s~s~ has left their service.',
   -- F6 Menu
   ['ems_menu'] = 'EMS Menu',
   ['ems_menu_title'] = 'ambulance - EMS Menu',
@@ -80,6 +90,6 @@ Locales['en'] = {
   ['not_enough_bandage'] = 'You do not have ~b~bandage~s~.',
   ['healed'] = 'you have been treated.',
   -- Blips
-  ['blip_hospital'] = 'hospital',
+  ['hospital_blip'] = 'hospital',
   ['blip_dead'] = 'unconscious player',
 }
